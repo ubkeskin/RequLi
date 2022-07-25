@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="false" userDefinedModelVersionIdentifier="">
-    <elements/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21D62" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="ItemModel" representedClassName=".ItemModel" syncable="YES">
+        <attribute name="attribute" attributeType="Binary"/>
+        <attribute name="category" attributeType="String"/>
+        <attribute name="enerjyValue" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <relationship name="purchasedThingsList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PurchasedThingsModel" inverseName="items" inverseEntity="PurchasedThingsModel"/>
+    </entity>
+    <entity name="PurchasedThingsModel" representedClassName=".PurchasedThingsModel" syncable="YES">
+        <attribute name="cost" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ItemModel" inverseName="purchasedThingsList" inverseEntity="ItemModel"/>
+    </entity>
+    <elements>
+        <element name="ItemModel" positionX="195.1484375" positionY="-35.3203125" width="128" height="118"/>
+        <element name="PurchasedThingsModel" positionX="-63" positionY="9" width="128" height="88"/>
+    </elements>
 </model>

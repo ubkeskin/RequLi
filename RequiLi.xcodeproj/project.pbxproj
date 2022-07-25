@@ -7,25 +7,37 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		63750EC3288D727600AA8958 /* ItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63750EC2288D727600AA8958 /* ItemCell.swift */; };
+		63D2402D288AA75D00BB28DA /* Item+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D2402B288AA75D00BB28DA /* Item+CoreDataClass.swift */; };
+		63D2402E288AA75D00BB28DA /* Item+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D2402C288AA75D00BB28DA /* Item+CoreDataProperties.swift */; };
 		63D3F75E288A854600CF3F1B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D3F75D288A854600CF3F1B /* AppDelegate.swift */; };
 		63D3F760288A854600CF3F1B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D3F75F288A854600CF3F1B /* SceneDelegate.swift */; };
-		63D3F762288A854600CF3F1B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D3F761288A854600CF3F1B /* ViewController.swift */; };
+		63D3F762288A854600CF3F1B /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D3F761288A854600CF3F1B /* MainViewController.swift */; };
 		63D3F765288A854600CF3F1B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63D3F763288A854600CF3F1B /* Main.storyboard */; };
 		63D3F768288A854600CF3F1B /* RequiLi.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 63D3F766288A854600CF3F1B /* RequiLi.xcdatamodeld */; };
 		63D3F76A288A854700CF3F1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63D3F769288A854700CF3F1B /* Assets.xcassets */; };
 		63D3F76D288A854700CF3F1B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63D3F76B288A854700CF3F1B /* LaunchScreen.storyboard */; };
+		63F0CE16288AB21700DE13A8 /* PurchasedThingsModel+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F0CE14288AB21700DE13A8 /* PurchasedThingsModel+CoreDataClass.swift */; };
+		63F0CE17288AB21700DE13A8 /* PurchasedThingsModel+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F0CE15288AB21700DE13A8 /* PurchasedThingsModel+CoreDataProperties.swift */; };
+		63F0CE1A288AD1A100DE13A8 /* AddNewItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F0CE19288AD1A100DE13A8 /* AddNewItemViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		63750EC2288D727600AA8958 /* ItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCell.swift; sourceTree = "<group>"; };
+		63D2402B288AA75D00BB28DA /* Item+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Item+CoreDataClass.swift"; sourceTree = "<group>"; };
+		63D2402C288AA75D00BB28DA /* Item+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Item+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		63D3F75A288A854600CF3F1B /* RequiLi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RequiLi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		63D3F75D288A854600CF3F1B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		63D3F75F288A854600CF3F1B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		63D3F761288A854600CF3F1B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		63D3F761288A854600CF3F1B /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		63D3F764288A854600CF3F1B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		63D3F767288A854600CF3F1B /* RequiLi.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RequiLi.xcdatamodel; sourceTree = "<group>"; };
+		63D3F767288A854600CF3F1B /* RequiLi.xcdatamodel */ = {isa = PBXFileReference; explicitFileType = wrapper.xcdatamodel; path = RequiLi.xcdatamodel; sourceTree = "<group>"; };
 		63D3F769288A854700CF3F1B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		63D3F76C288A854700CF3F1B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		63D3F76E288A854700CF3F1B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		63F0CE14288AB21700DE13A8 /* PurchasedThingsModel+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PurchasedThingsModel+CoreDataClass.swift"; sourceTree = "<group>"; };
+		63F0CE15288AB21700DE13A8 /* PurchasedThingsModel+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PurchasedThingsModel+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		63F0CE19288AD1A100DE13A8 /* AddNewItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddNewItemViewController.swift; path = RequiLi/AddNewItemViewController.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +51,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		63750EC1288D725600AA8958 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				63750EC2288D727600AA8958 /* ItemCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		63D2402F288AA76400BB28DA /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				63F0CE14288AB21700DE13A8 /* PurchasedThingsModel+CoreDataClass.swift */,
+				63F0CE15288AB21700DE13A8 /* PurchasedThingsModel+CoreDataProperties.swift */,
+				63D2402B288AA75D00BB28DA /* Item+CoreDataClass.swift */,
+				63D2402C288AA75D00BB28DA /* Item+CoreDataProperties.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		63D3F751288A854600CF3F1B = {
 			isa = PBXGroup;
 			children = (
@@ -58,9 +89,11 @@
 		63D3F75C288A854600CF3F1B /* RequiLi */ = {
 			isa = PBXGroup;
 			children = (
+				63750EC1288D725600AA8958 /* View */,
+				63F0CE18288AB5AB00DE13A8 /* ViewController */,
+				63D2402F288AA76400BB28DA /* Model */,
 				63D3F75D288A854600CF3F1B /* AppDelegate.swift */,
 				63D3F75F288A854600CF3F1B /* SceneDelegate.swift */,
-				63D3F761288A854600CF3F1B /* ViewController.swift */,
 				63D3F763288A854600CF3F1B /* Main.storyboard */,
 				63D3F769288A854700CF3F1B /* Assets.xcassets */,
 				63D3F76B288A854700CF3F1B /* LaunchScreen.storyboard */,
@@ -68,6 +101,15 @@
 				63D3F766288A854600CF3F1B /* RequiLi.xcdatamodeld */,
 			);
 			path = RequiLi;
+			sourceTree = "<group>";
+		};
+		63F0CE18288AB5AB00DE13A8 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				63F0CE19288AD1A100DE13A8 /* AddNewItemViewController.swift */,
+				63D3F761288A854600CF3F1B /* MainViewController.swift */,
+			);
+			path = ViewController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -141,7 +183,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				63D3F762288A854600CF3F1B /* ViewController.swift in Sources */,
+				63F0CE17288AB21700DE13A8 /* PurchasedThingsModel+CoreDataProperties.swift in Sources */,
+				63D2402E288AA75D00BB28DA /* Item+CoreDataProperties.swift in Sources */,
+				63D2402D288AA75D00BB28DA /* Item+CoreDataClass.swift in Sources */,
+				63D3F762288A854600CF3F1B /* MainViewController.swift in Sources */,
+				63750EC3288D727600AA8958 /* ItemCell.swift in Sources */,
+				63F0CE16288AB21700DE13A8 /* PurchasedThingsModel+CoreDataClass.swift in Sources */,
+				63F0CE1A288AD1A100DE13A8 /* AddNewItemViewController.swift in Sources */,
 				63D3F75E288A854600CF3F1B /* AppDelegate.swift in Sources */,
 				63D3F760288A854600CF3F1B /* SceneDelegate.swift in Sources */,
 				63D3F768288A854600CF3F1B /* RequiLi.xcdatamodeld in Sources */,
