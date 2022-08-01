@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6338FDE828902F1A00A8706B /* TitleSupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6338FDE728902F1A00A8706B /* TitleSupplementaryView.swift */; };
 		63750EC3288D727600AA8958 /* ItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63750EC2288D727600AA8958 /* ItemCell.swift */; };
 		63D2402D288AA75D00BB28DA /* Item+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D2402B288AA75D00BB28DA /* Item+CoreDataClass.swift */; };
 		63D2402E288AA75D00BB28DA /* Item+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D2402C288AA75D00BB28DA /* Item+CoreDataProperties.swift */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6338FDE728902F1A00A8706B /* TitleSupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleSupplementaryView.swift; sourceTree = "<group>"; };
 		63750EC2288D727600AA8958 /* ItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCell.swift; sourceTree = "<group>"; };
 		63D2402B288AA75D00BB28DA /* Item+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Item+CoreDataClass.swift"; sourceTree = "<group>"; };
 		63D2402C288AA75D00BB28DA /* Item+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Item+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -55,6 +57,7 @@
 			isa = PBXGroup;
 			children = (
 				63750EC2288D727600AA8958 /* ItemCell.swift */,
+				6338FDE728902F1A00A8706B /* TitleSupplementaryView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -184,6 +187,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				63F0CE17288AB21700DE13A8 /* PurchasedThingsModel+CoreDataProperties.swift in Sources */,
+				6338FDE828902F1A00A8706B /* TitleSupplementaryView.swift in Sources */,
 				63D2402E288AA75D00BB28DA /* Item+CoreDataProperties.swift in Sources */,
 				63D2402D288AA75D00BB28DA /* Item+CoreDataClass.swift in Sources */,
 				63D3F762288A854600CF3F1B /* MainViewController.swift in Sources */,

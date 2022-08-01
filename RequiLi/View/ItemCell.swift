@@ -10,6 +10,6 @@ import UIKit
 class ItemCell: UICollectionViewCell {
   static let reuseIdentifier = String(describing: ItemCell.self)
   
+  @IBOutlet var titleLabel: UILabel!
   @IBOutlet var compactImageView: UIImageView!
-  @IBOutlet weak var label: UILabel!
 }

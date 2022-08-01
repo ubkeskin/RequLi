@@ -61,7 +61,7 @@ extension AddNewItemViewController: UITextFieldDelegate {
     let newItem = ItemModel(context: context)
     newItem.name = nameTextField.text
     newItem.enerjyValue = filterEnerjyString()
-    newItem.itemCategory = itemCategories[categoryPicker.selectedRow(inComponent: 1)]
+    newItem.itemCategory = itemCategories[categoryPicker.selectedRow(inComponent: 0)]
     newItem.attribute = itemImageData
   }
   
@@ -102,7 +102,7 @@ extension AddNewItemViewController: UIPickerViewDataSource, UIPickerViewDelegate
   
   func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
     return itemCategories.map { itemCategory in
-      itemCategory.rawValue
+      itemCategory.info
     }[row]
   }
 }

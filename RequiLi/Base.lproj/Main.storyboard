@@ -10,10 +10,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--RequiLi-->
+        <!--Main View View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController title="RequiLi" id="BYZ-38-t0r" customClass="MainViewController" customModule="RequiLi" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Main View View Controller" id="BYZ-38-t0r" customClass="MainViewController" customModule="RequiLi" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -29,14 +29,14 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ItemCell" id="TjT-iK-ZDm" customClass="ItemCell" customModule="RequiLi" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                        <rect key="frame" x="92" y="0.0" width="230" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="wdV-C7-mk9">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="230" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QpN-Rx-7K7">
-                                                    <rect key="frame" x="10" y="12" width="394" height="21"/>
+                                                    <rect key="frame" x="10" y="12" width="210" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -49,9 +49,9 @@
                                                 <constraint firstItem="QpN-Rx-7K7" firstAttribute="top" secondItem="wdV-C7-mk9" secondAttribute="top" constant="12" id="wf1-c6-o28"/>
                                             </constraints>
                                         </collectionViewCellContentView>
-                                        <size key="customSize" width="414" height="44"/>
+                                        <size key="customSize" width="230" height="44"/>
                                         <connections>
-                                            <outlet property="label" destination="QpN-Rx-7K7" id="hiq-2G-DMb"/>
+                                            <outlet property="titleLabel" destination="QpN-Rx-7K7" id="dCX-Oz-9AJ"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -69,7 +69,7 @@
                     <navigationItem key="navigationItem" id="Nh3-AP-OyG">
                         <barButtonItem key="rightBarButtonItem" title="Add New Item" id="3n6-Tb-ohw">
                             <connections>
-                                <segue destination="fa3-fS-Feg" kind="show" id="lgk-Lb-W9f"/>
+                                <segue destination="fa3-fS-Feg" kind="show" identifier="AddNewItem" id="lgk-Lb-W9f"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
