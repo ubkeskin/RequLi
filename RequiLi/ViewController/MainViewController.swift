@@ -153,14 +153,14 @@ extension MainViewController: NSFetchedResultsControllerDelegate {
       var snapshot = snapshot as NSDiffableDataSourceSnapshot<ItemCategory, NSManagedObjectID>
       var currentSnapshot = dataSource.snapshot() as NSDiffableDataSourceSnapshot<ItemCategory, NSManagedObjectID>
       
-//      let reloadIdentifiers: [NSManagedObjectID] = snapshot.itemIdentifiers.compactMap { itemIdentifier in
-//          guard let currentIndex = currentSnapshot.indexOfItem(itemIdentifier), let index = snapshot.indexOfItem(itemIdentifier), index == currentIndex else {
-//              return nil
-//          }
-//          guard let existingObject = try? controller.managedObjectContext.existingObject(with: itemIdentifier), existingObject.isUpdated else { return nil }
-//          return itemIdentifier
-//      }
-//      snapshot.reloadItems(reloadIdentifiers)
+      let reloadIdentifiers: [NSManagedObjectID] = snapshot.itemIdentifiers.compactMap { itemIdentifier in
+          guard let currentIndex = currentSnapshot.indexOfItem(itemIdentifier), let index = snapshot.indexOfItem(itemIdentifier), index == currentIndex else {
+              return nil
+          }
+          guard let existingObject = try? controller.managedObjectContext.existingObject(with: itemIdentifier), existingObject.isUpdated else { return nil }
+          return itemIdentifier
+      }
+      snapshot.reloadItems(reloadIdentifiers)
       
       print(snapshot.itemIdentifiers.count)
       print(currentSnapshot.itemIdentifiers.count)
