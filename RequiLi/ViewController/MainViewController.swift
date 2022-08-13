@@ -14,8 +14,9 @@ class MainViewController: UIViewController {
   @IBOutlet weak var collectionView: UICollectionView!
   
   private var dataSource: UICollectionViewDiffableDataSource<ItemCategory, NSManagedObjectID>!
+  private var barButton: UIBarButtonItem?
   private var sections: [ItemCategory] = []
-
+  private var selectedItemIdentifiers: [NSManagedObjectID] = []
   var context: NSManagedObjectContext!
   
   private lazy var fetchedResultsController: NSFetchedResultsController<ItemModel>? = {
@@ -32,14 +33,7 @@ class MainViewController: UIViewController {
   frc.delegate = self
   return frc
 }()
-  
-  private var testArray: Array<Int> {
-    var array: Array<Int> = []
-    for i in 1...100 {
-      array.append(i)
-    }
-    return array
-  }
+
   
   func initFetchResultController() {
     guard let fetchedResultsController = fetchedResultsController else {
@@ -52,23 +46,32 @@ class MainViewController: UIViewController {
       fatalError("Core Data fetch error")
     }
   }
-
+  
+  deinit {
+    NotificationCenter.default.removeObserver(self)
+  }
+  
   override func viewDidLoad() {
     super.viewDidLoad()
+    barButton = navigationItem.leftBarButtonItem
+
     setupView()
-//    collectionView.collectionViewLayout = configureLayout()
-//    configureDataSource()
-//    initFetchResultController()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(true)
+    initFetchResultController()
   }
   
   func setupView() {
+    NotificationCenter.default.addObserver(self, selector: #selector(updateNavigationBarItem), name: .selectedIdentifiersUpdated, object: nil)
+    updateNavigationBarItem(notificaition: .init(name: .selectedIdentifiersUpdated))
     collectionView.register(TitleSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TitleSupplementaryView.reuseIdentifier)
     collectionView.collectionViewLayout = configureLayout()
     collectionView.delegate = self
     configureDataSource()
-    initFetchResultController()
+//    initFetchResultController()
 
-//    initialSnapshot()
 
   }
   
@@ -115,9 +118,12 @@ extension MainViewController {
       guard let object = self.fetchedResultsController?.managedObjectContext.object(with: objectID) as? ItemModel else {
         fatalError("object cannot initialized")
       }
-      guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ItemCell", for: indexPath) as? ItemCell else {return nil}
-//      cell.compactImageView = UIImageView(image: UIImage(systemName: "r.square.fill"))
+      guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ItemCell", for: indexPath) as? ItemCell else {fatalError("cell did not dequeued.")}
       cell.titleLabel.text = object.name
+      guard let imageData = object.attribute else {
+        return cell
+      }
+      cell.compactImageView.image = UIImage(data: imageData)
 
       return cell
     })
@@ -150,45 +156,30 @@ extension MainViewController: NSFetchedResultsControllerDelegate {
     }
 
       
-      var snapshot = snapshot as NSDiffableDataSourceSnapshot<ItemCategory, NSManagedObjectID>
-      var currentSnapshot = dataSource.snapshot() as NSDiffableDataSourceSnapshot<ItemCategory, NSManagedObjectID>
+      let snapshot = snapshot as NSDiffableDataSourceSnapshot<ItemCategory, NSManagedObjectID>
+      var currentSnapshot = NSDiffableDataSourceSnapshot<ItemCategory, NSManagedObjectID>()
       
-      let reloadIdentifiers: [NSManagedObjectID] = snapshot.itemIdentifiers.compactMap { itemIdentifier in
-          guard let currentIndex = currentSnapshot.indexOfItem(itemIdentifier), let index = snapshot.indexOfItem(itemIdentifier), index == currentIndex else {
-              return nil
-          }
-          guard let existingObject = try? controller.managedObjectContext.existingObject(with: itemIdentifier), existingObject.isUpdated else { return nil }
-          return itemIdentifier
-      }
-      snapshot.reloadItems(reloadIdentifiers)
-      
-      print(snapshot.itemIdentifiers.count)
-      print(currentSnapshot.itemIdentifiers.count)
+  
 
-     let appendingItems = snapshot.itemIdentifiers.filter { objectID in
-       !currentSnapshot.itemIdentifiers.contains(objectID)
-      }
       
-      fetchedResultsController?.fetchedObjects?.filter({ item in
-        appendingItems.contains(item.objectID)
-      }) .forEach({ item in
-        if !sections.contains(item.itemCategory) {
-          sections.append(item.itemCategory)
-          currentSnapshot.appendSections([item.itemCategory])
-          currentSnapshot.appendItems([item.objectID], toSection: item.itemCategory)
+      snapshot.itemIdentifiers.forEach { objectID in
+        var item = controller.managedObjectContext.object(with: objectID) as? ItemModel
+        if !currentSnapshot.sectionIdentifiers.contains(item!.itemCategory) {
+        currentSnapshot.appendSections([item!.itemCategory])
+        currentSnapshot.appendItems([item!.objectID], toSection: item?.itemCategory)
         } else {
-          currentSnapshot.appendItems([item.objectID], toSection: item.itemCategory)
+          currentSnapshot.appendItems([item!.objectID], toSection: item?.itemCategory)
+
         }
-      })
+      }
       
-      print(snapshot.itemIdentifiers.count)
-      print(currentSnapshot.itemIdentifiers.count)
-      
+      print("snapshot",snapshot.itemIdentifiers.count)
+      print("currentSnapshot", currentSnapshot.itemIdentifiers.count)
 
-      let shouldAnimate = collectionView?.numberOfSections != 0
+      let shouldAnimate = dataSource.snapshot().numberOfItems - currentSnapshot.numberOfItems != 0
 
 
-      self.dataSource.apply(currentSnapshot as NSDiffableDataSourceSnapshot<ItemCategory, NSManagedObjectID>, animatingDifferences: false)
+      self.dataSource.apply(currentSnapshot as NSDiffableDataSourceSnapshot<ItemCategory, NSManagedObjectID>, animatingDifferences: shouldAnimate)
     }
   
 
@@ -201,6 +192,9 @@ extension MainViewController {
     case "AddNewItem": if let controller = (segue.destination as? AddNewItemViewController) {
       handleAddNewItemSegue(newItemViewController: controller)
     }
+    case "SaveSelectedItems": if let controller = (segue.destination as? SelectedItemsViewController) {
+      handleSelectedItemsSegue(selectedItemsViewController: controller)
+    }
     default: return
     }
   }
@@ -208,14 +202,58 @@ extension MainViewController {
   private func handleAddNewItemSegue(newItemViewController: AddNewItemViewController) {
     newItemViewController.context = self.context
   }
+  private func handleSelectedItemsSegue(selectedItemsViewController: SelectedItemsViewController) {
+    selectedItemsViewController.context = self.context
+    selectedItemsViewController.selectedItemIdentifiers = selectedItemIdentifiers
+  }
+
   
 }
 
 // MARK: -Collection View Delegate
 
 extension MainViewController: UICollectionViewDelegate {
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    updateSelectedIdentifiers(collectionView: collectionView, indexPath: indexPath)
+    }
+  
+  @objc func updateSelectedIdentifiers(collectionView: UICollectionView, indexPath: IndexPath) {
+    
+    guard let indexPathForItemIdentifier = collectionView.dataSourceIndexPath(forPresentationIndexPath: indexPath) else { return }
+    guard let selectedItemIdentifier = dataSource.itemIdentifier(for: indexPathForItemIdentifier) else { return }
+    guard let cell = collectionView.cellForItem(at: indexPath) as? ItemCell else {
+      return
+    }
+    if !selectedItemIdentifiers.contains(selectedItemIdentifier) {
+      
+      selectedItemIdentifiers.append(selectedItemIdentifier)
+      cell.checkMark.image = UIImage(systemName: "circle.fill")!
+    } else {
+      selectedItemIdentifiers.removeAll { objectID in
+        objectID == selectedItemIdentifier
+      }
+      cell.checkMark.image = UIImage(systemName: "circle")!
+    }
+    NotificationCenter.default.post(name: .selectedIdentifiersUpdated, object: nil)
 
   }
+  
+  @objc func updateNavigationBarItem(notificaition: Notification) {
+    if selectedItemIdentifiers.count > 0 {
+      navigationItem.setLeftBarButton(barButton, animated:{
+        selectedItemIdentifiers.count > 1 ? false : true
+      }() )
+      }
+     else {
+       navigationItem.setLeftBarButton(nil, animated: true)
+    }
+    
+  }
+  
+  
+  
+}
+
 
 
 

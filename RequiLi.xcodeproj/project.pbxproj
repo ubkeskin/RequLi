@@ -7,8 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6328274C28A3AB37004AB204 /* PurchasedItemsRowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6328274B28A3AB37004AB204 /* PurchasedItemsRowCell.swift */; };
 		6338FDE828902F1A00A8706B /* TitleSupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6338FDE728902F1A00A8706B /* TitleSupplementaryView.swift */; };
+		636C678528A4165D002C85E8 /* PurchasedItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 636C678428A4165D002C85E8 /* PurchasedItemsViewController.swift */; };
 		63750EC3288D727600AA8958 /* ItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63750EC2288D727600AA8958 /* ItemCell.swift */; };
+		63824AA228A1A15E00B8F68E /* PurchasedItemListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63824AA128A1A15E00B8F68E /* PurchasedItemListViewController.swift */; };
+		63A427DB28A00AA800CA4264 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A427DA28A00AA800CA4264 /* Extensions.swift */; };
+		63A427DD28A14CE200CA4264 /* SelectdItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A427DC28A14CE200CA4264 /* SelectdItemsViewController.swift */; };
 		63D2402D288AA75D00BB28DA /* Item+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D2402B288AA75D00BB28DA /* Item+CoreDataClass.swift */; };
 		63D2402E288AA75D00BB28DA /* Item+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D2402C288AA75D00BB28DA /* Item+CoreDataProperties.swift */; };
 		63D3F75E288A854600CF3F1B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D3F75D288A854600CF3F1B /* AppDelegate.swift */; };
@@ -24,8 +29,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6328274B28A3AB37004AB204 /* PurchasedItemsRowCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasedItemsRowCell.swift; sourceTree = "<group>"; };
 		6338FDE728902F1A00A8706B /* TitleSupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleSupplementaryView.swift; sourceTree = "<group>"; };
+		636C678428A4165D002C85E8 /* PurchasedItemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasedItemsViewController.swift; sourceTree = "<group>"; };
 		63750EC2288D727600AA8958 /* ItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCell.swift; sourceTree = "<group>"; };
+		63824AA128A1A15E00B8F68E /* PurchasedItemListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasedItemListViewController.swift; sourceTree = "<group>"; };
+		63A427DA28A00AA800CA4264 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		63A427DC28A14CE200CA4264 /* SelectdItemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectdItemsViewController.swift; sourceTree = "<group>"; };
 		63D2402B288AA75D00BB28DA /* Item+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Item+CoreDataClass.swift"; sourceTree = "<group>"; };
 		63D2402C288AA75D00BB28DA /* Item+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Item+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		63D3F75A288A854600CF3F1B /* RequiLi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RequiLi.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -57,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				63750EC2288D727600AA8958 /* ItemCell.swift */,
+				6328274B28A3AB37004AB204 /* PurchasedItemsRowCell.swift */,
 				6338FDE728902F1A00A8706B /* TitleSupplementaryView.swift */,
 			);
 			path = View;
@@ -102,6 +113,7 @@
 				63D3F76B288A854700CF3F1B /* LaunchScreen.storyboard */,
 				63D3F76E288A854700CF3F1B /* Info.plist */,
 				63D3F766288A854600CF3F1B /* RequiLi.xcdatamodeld */,
+				63A427DA28A00AA800CA4264 /* Extensions.swift */,
 			);
 			path = RequiLi;
 			sourceTree = "<group>";
@@ -109,8 +121,11 @@
 		63F0CE18288AB5AB00DE13A8 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
-				63F0CE19288AD1A100DE13A8 /* AddNewItemViewController.swift */,
 				63D3F761288A854600CF3F1B /* MainViewController.swift */,
+				63F0CE19288AD1A100DE13A8 /* AddNewItemViewController.swift */,
+				63A427DC28A14CE200CA4264 /* SelectdItemsViewController.swift */,
+				63824AA128A1A15E00B8F68E /* PurchasedItemListViewController.swift */,
+				636C678428A4165D002C85E8 /* PurchasedItemsViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -187,16 +202,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				63F0CE17288AB21700DE13A8 /* PurchasedThingsModel+CoreDataProperties.swift in Sources */,
+				636C678528A4165D002C85E8 /* PurchasedItemsViewController.swift in Sources */,
+				63824AA228A1A15E00B8F68E /* PurchasedItemListViewController.swift in Sources */,
 				6338FDE828902F1A00A8706B /* TitleSupplementaryView.swift in Sources */,
 				63D2402E288AA75D00BB28DA /* Item+CoreDataProperties.swift in Sources */,
 				63D2402D288AA75D00BB28DA /* Item+CoreDataClass.swift in Sources */,
 				63D3F762288A854600CF3F1B /* MainViewController.swift in Sources */,
+				6328274C28A3AB37004AB204 /* PurchasedItemsRowCell.swift in Sources */,
 				63750EC3288D727600AA8958 /* ItemCell.swift in Sources */,
 				63F0CE16288AB21700DE13A8 /* PurchasedThingsModel+CoreDataClass.swift in Sources */,
+				63A427DB28A00AA800CA4264 /* Extensions.swift in Sources */,
 				63F0CE1A288AD1A100DE13A8 /* AddNewItemViewController.swift in Sources */,
 				63D3F75E288A854600CF3F1B /* AppDelegate.swift in Sources */,
 				63D3F760288A854600CF3F1B /* SceneDelegate.swift in Sources */,
 				63D3F768288A854600CF3F1B /* RequiLi.xcdatamodeld in Sources */,
+				63A427DD28A14CE200CA4264 /* SelectdItemsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

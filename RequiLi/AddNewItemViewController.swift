@@ -14,9 +14,19 @@ class AddNewItemViewController: UITableViewController {
   @IBOutlet var energyTextField: UITextField!
   @IBOutlet var itemImageView: UIImageView!
   
+  @IBAction func selectImage() {
+    let picker = UIImagePickerController()
+    picker.sourceType =
+    UIImagePickerController.isSourceTypeAvailable(.camera) ? .camera : .photoLibrary
+    picker.delegate = self
+    picker.allowsEditing = true
+    present(picker, animated: true)
+  }
+  
+  
   var itemCategories = ItemCategory.allCases
   var context: NSManagedObjectContext?
-  var itemImageData: Data?
+  var itemImageData: Data? = UIImage(systemName: "r.square.fill")?.pngData()
   
 
   override func viewDidLoad() {
@@ -25,9 +35,6 @@ class AddNewItemViewController: UITableViewController {
     categoryPicker.delegate = self
   }
   
-  
-  @IBAction func selectImage(_ sender: UIButton) {
-  }
   @IBAction func saveNewItem(_ sender: Any) {
     updateData()
     do {
@@ -57,13 +64,12 @@ extension AddNewItemViewController: UITextFieldDelegate {
   }
   
   func updateData() {
-    guard let context = context else { return }
-    let newItem = ItemModel(context: context)
-    newItem.name = nameTextField.text
-    newItem.enerjyValue = filterEnerjyString()
-    newItem.itemCategory = itemCategories[categoryPicker.selectedRow(inComponent: 0)]
-    newItem.attribute = itemImageData
+    guard let context = context,
+    let nameText = nameTextField.text else { return }
+    
+    let _ = ItemModel(name: nameText, category: itemCategories[categoryPicker.selectedRow(inComponent: 0)].rawValue, enerjyValue: filterEnerjyString(), attribute: itemImageData, purchasedThingsList: nil, context: context)
   }
+
   
   func filterEnerjyString() -> Int32 {
     let filtered = energyTextField.text?.filter {$0.isNumber}
@@ -73,7 +79,10 @@ extension AddNewItemViewController: UITextFieldDelegate {
   
 }
 
+//MARK: -ImagePickerControllerDelegate
+
 extension AddNewItemViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+  
   func imagePickerController(
     _ picker: UIImagePickerController,
     didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]
