@@ -17,12 +17,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, UISplitViewControllerDe
     guard let _ = (scene as? UIWindowScene) else { return }
     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
     guard let window = window else { return }
-    guard let tabBarController = window.rootViewController?.tabBarController as? UITabBarController else {return}
-    guard let navigationController = window.rootViewController as? UINavigationController else { return }
+    guard let tabBarController = window.rootViewController as? UITabBarController else {return}
+    guard var navigationController = tabBarController.viewControllers?[0] as? UINavigationController else { return }
+    let masterViewController = navigationController.viewControllers[0] as! MainViewController
+    masterViewController.context = appDelegate.persistentContainer.viewContext
     
-    let masterTabBarController = tabBarController.viewControllers![0] as! MainViewController
-    masterTabBarController.context = appDelegate.persistentContainer.viewContext
-    let masterNavigationController = navigationController.viewControllers[0] as! MainViewController
+    navigationController = (tabBarController.viewControllers?[1] as? UINavigationController)!
+    let masterNavigationController = navigationController.viewControllers[0] as! PurchasedItemListViewController
     masterNavigationController.context = appDelegate.persistentContainer.viewContext
   }
 
