@@ -30,6 +30,10 @@ class PurchasedItemListViewController: UITableViewController {
     return frc
   }()
   
+  @IBAction func unwindSegue(_ segue: UIStoryboardSegue) {
+    
+  }
+  
   private lazy var dataSource: UITableViewDiffableDataSource<String, NSManagedObjectID> = {
     let dataSource = UITableViewDiffableDataSource<String,NSManagedObjectID>(tableView: self.tableView) { tableView, indexPath, id in
       guard let purchasedItems = (self.context?.object(with: id) as? PurchasedThingsModel) else {
@@ -40,8 +44,13 @@ class PurchasedItemListViewController: UITableViewController {
       }
 
       cell.purchaseDate.text = purchasedItems.date?.formatted(date: .numeric, time: .omitted)
+      cell.purchaseDate.textColor = UIColor(named: "TextColor")
       cell.numberOfRow?.text = "\(indexPath.row + 1)"
+      cell.numberOfRow?.textColor = UIColor(named: "TextColor")
       cell.purchaseAmount!.text = "\(purchasedItems.cost) $"
+      cell.purchaseAmount?.textColor = UIColor(named: "TextColor")
+      cell.backgroundColor = UIColor.clear
+      
       
       return cell
     }
@@ -49,8 +58,17 @@ class PurchasedItemListViewController: UITableViewController {
     return dataSource
   }()
   
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    tabBarController?.tabBar.isHidden = false
+
+  }
+  
   override func viewDidLoad() {
     super.viewDidLoad()
+    tabBarController?.tabBar.isHidden = false
+    navigationItem.setHidesBackButton(false, animated: false)
+    configureNavigationAndTabBars()
     initFetchResultController()
   }
   
@@ -98,5 +116,35 @@ extension PurchasedItemListViewController {
     let selectedCellData = context?.object(with: selectedCellDataIdentifier)
     selectedCellObject = selectedCellData
     performSegue(withIdentifier: "ShowPurchasedItemsViewController", sender: nil)
+  }
+}
+
+extension PurchasedItemListViewController {
+  func configureNavigationAndTabBars() {
+    let navigationBarAppearence = UINavigationBarAppearance()
+    navigationBarAppearence.configureWithDefaultBackground()
+    navigationBarAppearence.backgroundImage = UIImage(named: "RequiLi")
+    navigationBarAppearence.backgroundColor = UIColor(named: "NavigationBarColor")
+    
+    navigationBarAppearence.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+    
+    
+    navigationItem.standardAppearance = navigationBarAppearence
+    navigationItem.compactAppearance = navigationBarAppearence
+    navigationItem.scrollEdgeAppearance = navigationBarAppearence
+    navigationItem.leftBarButtonItem?.tintColor = .white
+    navigationItem.backBarButtonItem?.tintColor = .white
+    navigationItem.rightBarButtonItem?.tintColor = .white
+    
+    var appearence = UITabBarAppearance()
+    appearence.backgroundImage = UIImage(named: "BackgroundImage")
+    
+    tabBarController?.tabBar.standardAppearance = appearence
+    tabBarController?.tabBar.scrollEdgeAppearance = appearence
+    
+    tableView.backgroundView = UIImageView(image: UIImage(named: "BackgroundImage"))
+    tableView.backgroundColor?.withAlphaComponent(0)
+    tableView.backgroundColor = UIColor.clear
+    
   }
 }

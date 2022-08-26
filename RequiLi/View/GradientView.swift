@@ -1,19 +1,17 @@
 //
-//  GradientModel.swift
+//  GradientView.swift
 //  RequiLi
 //
-//  Created by OS on 7.08.2022.
+//  Created by OS on 26.08.2022.
 //
-
-import Foundation
 
 import UIKit
 
 class GradientView: UIView {
 
-  let startColor = UIColor(white: 1.0, alpha: 0)
-  let midColor = UIColor(white: 0, alpha: 0.4)
-  var endColor = UIColor(white: 0, alpha: 0.8)
+  let startColor = UIColor(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1), alpha: 0.2)
+  let midColor = UIColor(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1), alpha: 0.4)
+  var endColor = UIColor(red: .random(in: 0..<1), green: .random(in: 0..<1), blue: .random(in: 0..<1), alpha: 0.8)
   let startLocation: NSNumber = 0
   let midLocation: NSNumber = 0.6
   let endLocation: NSNumber = 1.0

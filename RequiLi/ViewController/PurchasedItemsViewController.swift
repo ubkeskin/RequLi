@@ -14,7 +14,8 @@ class PurchasedItemsViewController: UIViewController {
   
   private var dataSource: UICollectionViewDiffableDataSource<ItemCategory, ItemModel>?
 
-
+  @IBOutlet var backBarButtonItem: UINavigationItem!
+  
   var context: NSManagedObjectContext?
   var objectForSelectedCell: NSManagedObject?
   var itemModel: [ItemModel]{
@@ -44,10 +45,14 @@ class PurchasedItemsViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    collectionView.register(TitleSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TitleSupplementaryView.reuseIdentifier)
+    tabBarController?.tabBar.isHidden = true
+    navigationItem.setHidesBackButton(false, animated: false)
+
+//    collectionView.register(TitleSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TitleSupplementaryView.reuseIdentifier)
     collectionView.collectionViewLayout = configureLayout()
     configureDataSource()
     configureSnapshot()
+    configureNavigationAndTabBars()
   }
   
   func initFetchResultController() {
@@ -67,12 +72,12 @@ class PurchasedItemsViewController: UIViewController {
 extension PurchasedItemsViewController{
   func configureLayout() -> UICollectionViewCompositionalLayout {
     let sectionProvider = {(sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
-      let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+      let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.8))
       let item = NSCollectionLayoutItem(layoutSize: itemSize)
-      item.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+      item.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 30, trailing: 10)
 
       
-      let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.3), heightDimension: .fractionalHeight(0.3))
+      let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.35), heightDimension: .fractionalHeight(0.3))
       let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
       
       
@@ -101,13 +106,14 @@ extension PurchasedItemsViewController {
     
     dataSource = itemsDataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, item -> UICollectionViewCell? in
       
-//      guard let object = self.objectForSelectedCell as? PurchasedThingsModel else {
-//        fatalError("object cannot initialized")
-//      }
       guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ItemCell", for: indexPath) as? ItemCell else {fatalError("cell did not dequeued.")}
       
       
-      cell.titleLabel.text = item.name
+      cell.titleLabel.text = item.name?.uppercased()
+      cell.titleLabel.textColor = UIColor(named: "TextColor")
+      cell.backgroundColor = .white
+      cell.layer.cornerRadius = 20
+      
       guard let imageData = item.attribute else {
         return cell
       }
@@ -120,8 +126,11 @@ extension PurchasedItemsViewController {
       
       if let self = self, let titleSupplementaryView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TitleSupplementaryView.reuseIdentifier, for: indexPath) as? TitleSupplementaryView {
         
+//        let itemCategory = self.dataSource?.sectionIdentifier(for: indexPath.section)?.info
         let itemCategory = self.dataSource?.sectionIdentifier(for: indexPath.section)?.info
-        titleSupplementaryView.textLabel.text = itemCategory
+        titleSupplementaryView.textLabel?.text = itemCategory
+        titleSupplementaryView.backgroundImage.image =  UIImage(named: itemCategory!)
+        titleSupplementaryView.layer.cornerRadius = 20
         
         return titleSupplementaryView
       } else {
@@ -140,10 +149,10 @@ extension PurchasedItemsViewController {
       })
       {
         snapshot.appendSections([item.itemCategory])
-        snapshot.appendItems([item])
+        snapshot.appendItems([item], toSection: item.itemCategory)
 
       } else {
-        snapshot.appendItems([item])
+        snapshot.appendItems([item], toSection: item.itemCategory)
       }
     }
     print("snapshot last", snapshot.itemIdentifiers.count)
@@ -161,4 +170,24 @@ extension PurchasedItemsViewController: NSFetchedResultsControllerDelegate {
 //    let mySnapshot = snapshot as NSDiffableDataSourceSnapshot<String,NSManagedObject>
 //    dataSource?.apply(mySnapshot)
 //  }
+}
+
+extension PurchasedItemsViewController {
+  func configureNavigationAndTabBars() {
+    let navigationBarAppearence = UINavigationBarAppearance()
+    navigationBarAppearence.configureWithDefaultBackground()
+    navigationBarAppearence.backgroundImage = UIImage(named: "RequiLi")
+    navigationBarAppearence.backgroundColor = UIColor(named: "NavigationBarColor")
+    
+    
+    navigationBarAppearence.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+    
+    navigationController?.navigationBar.tintColor = UIColor(named: "BackgroundColor")
+    navigationItem.standardAppearance = navigationBarAppearence
+    navigationItem.compactAppearance = navigationBarAppearence
+    navigationItem.scrollEdgeAppearance = navigationBarAppearence
+    
+    
+    
+  }
 }

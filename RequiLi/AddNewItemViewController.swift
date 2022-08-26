@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import PhotosUI
 
 class AddNewItemViewController: UITableViewController {
   @IBOutlet var nameTextField: UITextField!
@@ -14,12 +15,28 @@ class AddNewItemViewController: UITableViewController {
   @IBOutlet var energyTextField: UITextField!
   @IBOutlet var itemImageView: UIImageView!
   
-  @IBAction func selectImage() {
+  @IBOutlet var selectImageButton: UIButton!
+  @IBAction func selectImageAction() {
     let picker = UIImagePickerController()
     picker.sourceType =
     UIImagePickerController.isSourceTypeAvailable(.camera) ? .camera : .photoLibrary
     picker.delegate = self
     picker.allowsEditing = true
+    
+//    let alert = UIAlertController(title: "Allow Access to Your Photos", message: "As you want to add custom photo, you need to allow access.", preferredStyle: .alert)
+//    let notNowAction = UIAlertAction(title: "Not Now", style: .cancel)
+//    alert.addAction(notNowAction)
+//
+//    let openSettingsAction = UIAlertAction(title: "Open Settings", style: .default) { [unowned self] (_) in
+//      gotoAppPrivacySettings()
+//    }
+//
+//    alert.addAction(openSettingsAction)
+//
+//
+//    present(alert, animated: true, completion: nil)
+
+    
     present(picker, animated: true)
   }
   
@@ -31,8 +48,17 @@ class AddNewItemViewController: UITableViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    PHPhotoLibrary.requestAuthorization(for: .readWrite) { [unowned self] (status) in
+      DispatchQueue.main.async {
+        [unowned self] in
+        showUI(_for: status)
+      }
+    }
+    tabBarController?.tabBar.isHidden = true 
     categoryPicker.dataSource = self
     categoryPicker.delegate = self
+    
+    configureLayoutColors()
   }
   
   @IBAction func saveNewItem(_ sender: Any) {
@@ -46,6 +72,7 @@ class AddNewItemViewController: UITableViewController {
     navigationController?.popViewController(animated: true)
   }
   @IBAction func cancel(_ sender: Any) {
+    
     navigationController?.popViewController(animated: true)
 
   }
@@ -114,6 +141,73 @@ extension AddNewItemViewController: UIPickerViewDataSource, UIPickerViewDelegate
       itemCategory.info
     }[row]
   }
+  
+}
+
+// MARK: Color Configuration
+extension AddNewItemViewController {
+  private func configureLayoutColors() {
+    let navigationBarAppearence = UINavigationBarAppearance()
+    navigationBarAppearence.configureWithDefaultBackground()
+    navigationBarAppearence.backgroundImage = UIImage(named: "RequiLi")
+    navigationBarAppearence.backgroundColor = UIColor(named: "NavigationBarColor")
+    
+    
+    
+    
+    navigationItem.standardAppearance = navigationBarAppearence
+    navigationItem.compactAppearance = navigationBarAppearence
+    navigationItem.scrollEdgeAppearance = navigationBarAppearence
+    navigationItem.leftBarButtonItem?.tintColor = UIColor(named: "BackgroundColor")
+    navigationItem.rightBarButtonItem?.tintColor = UIColor(named: "BackgroundColor")
+    
+    
+  
+    
+    tableView.backgroundView = UIImageView(image: UIImage(named: "BackgroundImage"))
+    tableView.backgroundColor?.withAlphaComponent(0)
+    
+    
+  }
+}
+
+// MARK: uncategorized function
+extension AddNewItemViewController {
+  func showUI(_for: PHAuthorizationStatus) {
+    switch _for {
+    case .notDetermined:
+      showAccessDeniedUI()
+    case .restricted:
+      showAccessDeniedUI()
+    case .denied:
+      break
+    case .authorized:
+      showAccessDeniedUI()
+    case .limited:
+      showAccessDeniedUI()
+    }
+  }
+  
+  func gotoAppPrivacySettings() {
+      guard let url = URL(string: UIApplication.openSettingsURLString),
+          UIApplication.shared.canOpenURL(url) else {
+              assertionFailure("Not able to open App privacy settings")
+              return
+      }
+
+      UIApplication.shared.open(url, options: [:], completionHandler: nil)
+  }
+  
+  func showAccessDeniedUI() {
+    selectImageButton.isHidden = false
+//    selectImageButton.titleLabel?.text = "Access denied to photos."
+  }
+  
+}
+
+// MARK: TableView Data Source
+extension AddNewItemViewController {
+  
 }
 
 

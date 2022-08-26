@@ -14,7 +14,6 @@ class ItemCell: UICollectionViewCell {
   
   @IBOutlet var titleLabel: UILabel!
   @IBOutlet var compactImageView: UIImageView!
-  @IBOutlet var checkMark: UIImageView!
   
   }
 
