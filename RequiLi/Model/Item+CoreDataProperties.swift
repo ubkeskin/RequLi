@@ -41,7 +41,7 @@ enum ItemCategory: Double, CaseIterable, Hashable {
   
   case fruit = 0.0
   case meat = 1.0
-  case fish = 2.0
+  case seaFood = 2.0
   case vegetable = 3.0
   case junk = 4.0
   case cleaner = 5.0
@@ -52,7 +52,7 @@ enum ItemCategory: Double, CaseIterable, Hashable {
     switch self {
     case .fruit: return "Fruit"
     case .meat: return "Meat"
-    case .fish: return "Fish"
+    case .seaFood: return "Sea Food"
     case .vegetable: return "Vegetable"
     case .junk: return "Junk"
     case .cleaner: return "Cleaner"

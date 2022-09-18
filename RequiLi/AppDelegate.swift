@@ -13,9 +13,49 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
+    
+    seedData()
     UITabBar.appearance().unselectedItemTintColor = UIColor.green
+    
 
     return true
+  }
+  
+  func seedData() {
+    let fileManager = FileManager.default
+    let libraryDirectory = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first!
+    let destinationFolder = libraryDirectory.appendingPathComponent("Application Support").path
+    
+    let folderPath = Bundle.main.resourceURL!.appendingPathComponent("RequiLiSeedData").path
+    
+    let urls = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask)
+    if let applicationSupportUrl = urls.last{
+      do {
+        try fileManager.createDirectory(at: applicationSupportUrl, withIntermediateDirectories: true, attributes: nil)
+      } catch {
+        print(error)
+      }
+    }
+    copyFiles(pathFromBundle: folderPath, pathDestDocs: destinationFolder)
+    
+  }
+  
+  func copyFiles(pathFromBundle: String, pathDestDocs: String) {
+    let fileManager = FileManager.default
+    
+    do {
+      let fileList = try fileManager.contentsOfDirectory(atPath: pathFromBundle)
+      let fileDestinationList = try fileManager.contentsOfDirectory(atPath: pathDestDocs)
+      
+      for fileName in fileDestinationList {
+        try fileManager.removeItem(atPath: "\(pathDestDocs)/\(fileName)")
+      }
+      for fileName in fileList {
+        try fileManager.copyItem(atPath: "\(pathFromBundle)/\(fileName)", toPath: "\(pathDestDocs)/\(fileName)")
+      }
+    } catch  {
+      print(error)
+    }
   }
 
   // MARK: UISceneSession Lifecycle
@@ -31,6 +71,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
     // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
   }
+  
+  
 
   // MARK: - Core Data stack
 
@@ -45,6 +87,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       })
       return container
   }()
+  
 
   // MARK: - Core Data Saving support
 

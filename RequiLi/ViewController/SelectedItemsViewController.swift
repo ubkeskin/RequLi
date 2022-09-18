@@ -8,7 +8,7 @@
 import UIKit
 import CoreData
 
-class SelectedItemsViewController: UITableViewController {
+class SelectedItemsViewController: UITableViewController, BundleUpdate {
   @IBOutlet var countSelectedItemsLabel: UILabel!
   @IBOutlet var purchaseDatePicker: UIDatePicker?
   @IBOutlet var costTextField: UITextField?
@@ -17,11 +17,6 @@ class SelectedItemsViewController: UITableViewController {
   }
   
   @IBAction func cancel() {
-    
-//    guard let controller = navigationController?.topViewController as? MainViewController else { return }
-//    handlePopMainViewController(controller: controller)
-//    navigationController?.popViewController(animated: true)
-    
   }
   
   @IBAction func setDatePicker(sender: UIDatePicker) {
@@ -42,20 +37,6 @@ class SelectedItemsViewController: UITableViewController {
     }
     return items
   }
-  
-//  private lazy var dataSource: UITableViewDiffableDataSource<ItemCategory, ItemModel>? = {
-//    var dataSource = UITableViewDiffableDataSource<ItemCategory, ItemModel>(tableView: tableView) { tableView, indexPath, itemIdentifier in
-//      guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewShowItemCell.reuseIdentifier, for: [1,0]) as? TableViewShowItemCell else {
-//        fatalError()
-//      }
-//      cell.label?.text = itemIdentifier.name
-//      cell.tableImage?.image = UIImage(data: itemIdentifier.attribute!)
-//      
-//      return cell
-//    }
-//    tableView.dataSource = dataSource
-//    return dataSource
-//  }()
  
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -65,10 +46,6 @@ class SelectedItemsViewController: UITableViewController {
     
         
     costTextField?.delegate = self
-//    configureSnapshot()
-//    countSelectedItemsLabel.text = "You have selected \(selectedItemIdentifiers.count) items."
-    
-      
   }
   
   
@@ -96,8 +73,37 @@ class SelectedItemsViewController: UITableViewController {
     } catch  {
       fatalError("context could not save item")
     }
-
+    updateSeedData()
   }
+  
+  func updateSeedData() {
+    let fileManager = FileManager.default
+    let libraryDirectory = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first
+    let sourceFolder = libraryDirectory!.appendingPathComponent("Application Support").path
+    
+    let destination = Bundle.main.resourceURL!.appendingPathComponent("RequiLiSeedData").path
+    
+    copyFiles(from: sourceFolder, to: destination)
+    }
+  
+  func copyFiles(from source: String, to destination: String) {
+    let fileManager = FileManager.default
+    
+    do {
+      let fileList = try fileManager.contentsOfDirectory(atPath: source)
+      let fileDestinationList = try fileManager.contentsOfDirectory(atPath: destination)
+      
+      for fileName in fileDestinationList {
+        try fileManager.removeItem(atPath: "\(destination)/\(fileName)")
+      }
+      for fileName in fileList {
+        try fileManager.copyItem(atPath: "\(source)/\(fileName)", toPath: "\(destination)/\(fileName)")
+      }
+    } catch  {
+      print(error)
+    }
+  }
+  
   private func filterCostTextField() -> Double {
     guard let cost = costTextField else {
       return 0.0
@@ -145,6 +151,7 @@ extension SelectedItemsViewController {
       
 //      NotificationCenter.default.addObserver(self, selector: #selector(setDatePicker(sender:)), name: .datePickerIsChanged, object: cell.purchaseDatePicker)
 //      NotificationCenter.default.post(name: .datePickerIsChanged, object: cell.purchaseDatePicker)
+      cell.purchaseDatePicker?.tintColor = UIColor(named: "TextColor")
       cell.purchaseDatePicker?.addTarget(self, action: #selector(setDatePicker(sender:)), for: .allEvents)
       self.purchaseDatePicker = cell.purchaseDatePicker
       return cell
@@ -269,9 +276,11 @@ extension SelectedItemsViewController {
 // MARK: Color Configuration
 extension SelectedItemsViewController {
   private func configureLayoutColors() {
+    
+    
     let navigationBarAppearence = UINavigationBarAppearance()
     navigationBarAppearence.configureWithDefaultBackground()
-    navigationBarAppearence.backgroundColor = UIColor(named: "NavigationBarColor")
+    navigationBarAppearence.backgroundImage = UIImage(named: "RequiLi")
     
     navigationBarAppearence.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
     
@@ -283,14 +292,16 @@ extension SelectedItemsViewController {
     navigationItem.rightBarButtonItem?.tintColor = .white
     
     let tabBarAppearence = UITabBarAppearance()
+    
     tabBarAppearence.configureWithTransparentBackground()
-    tabBarAppearence.backgroundColor = UIColor(named: "NavigationBarColor")
+    tabBarAppearence.backgroundColor = UIColor(named: "BackgroundColor")
     
     
     tabBarController?.tabBar.standardAppearance = tabBarAppearence
     tabBarController?.tabBar.scrollEdgeAppearance = tabBarAppearence
     
-    tableView.backgroundColor = UIColor(named: "BackgroundColor")
+    tableView.backgroundColor = UIColor(named: "TitleSubviewBackgroundColor")
+    
     
     
         

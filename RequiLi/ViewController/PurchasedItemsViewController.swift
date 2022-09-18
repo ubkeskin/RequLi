@@ -47,6 +47,8 @@ class PurchasedItemsViewController: UIViewController {
     super.viewDidLoad()
     tabBarController?.tabBar.isHidden = true
     navigationItem.setHidesBackButton(false, animated: false)
+    
+    collectionView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
 
 //    collectionView.register(TitleSupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TitleSupplementaryView.reuseIdentifier)
     collectionView.collectionViewLayout = configureLayout()
@@ -129,7 +131,7 @@ extension PurchasedItemsViewController {
 //        let itemCategory = self.dataSource?.sectionIdentifier(for: indexPath.section)?.info
         let itemCategory = self.dataSource?.sectionIdentifier(for: indexPath.section)?.info
         titleSupplementaryView.textLabel?.text = itemCategory
-        titleSupplementaryView.backgroundImage.image =  UIImage(named: itemCategory!)
+        titleSupplementaryView.backgroundColor = UIColor(named: "TitleSubviewBackgroundColor")
         titleSupplementaryView.layer.cornerRadius = 20
         
         return titleSupplementaryView
@@ -182,7 +184,7 @@ extension PurchasedItemsViewController {
     
     navigationBarAppearence.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
     
-    navigationController?.navigationBar.tintColor = UIColor(named: "BackgroundColor")
+    navigationController?.navigationBar.tintColor = UIColor(named: "TextColor")
     navigationItem.standardAppearance = navigationBarAppearence
     navigationItem.compactAppearance = navigationBarAppearence
     navigationItem.scrollEdgeAppearance = navigationBarAppearence

@@ -25,6 +25,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, UISplitViewControllerDe
     navigationController = (tabBarController.viewControllers?[1] as? UINavigationController)!
     let masterNavigationController = navigationController.viewControllers[0] as! PurchasedItemListViewController
     masterNavigationController.context = appDelegate.persistentContainer.viewContext
+    
   }
 
   func sceneDidDisconnect(_ scene: UIScene) {

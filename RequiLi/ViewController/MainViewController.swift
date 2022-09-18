@@ -8,28 +8,44 @@
 import UIKit
 import CoreData
 
-class MainViewController: UIViewController {
+class MainViewController: UIViewController, BundleUpdate {
   
   
+  @IBOutlet var addNewItemButton: UIBarButtonItem!
+  @IBOutlet var deleteButton: UIBarButtonItem!
   @IBOutlet var backgroundView: UIImageView!
   @IBOutlet weak var collectionView: UICollectionView!
   @IBAction func prepareForUnwindCancelButton(segue: UIStoryboardSegue) {
     guard let source = segue.source as? SelectedItemsViewController else {
     return
     }
-    selectedItemIdentifiers = source.selectedItemIdentifiers
+    guard let destination = segue.destination as? MainViewController else {
+      return
+    }
+    selectedItemIdentifiers = source.selectedItemIdentifiers.count == 0 ? [] : source.selectedItemIdentifiers
+    destination.configureNavigationAndTabBars()
+    updateNavigationBarItem(notificaition: Notification(name: .selectedIdentifiersUpdated))
   }
   @IBAction func prepareForUnwindSaveButton(segue: UIStoryboardSegue) {
     guard let source = segue.source as? SelectedItemsViewController else {
     return
     }
+    guard let destination = segue.destination as? MainViewController else {
+      return
+    }
     selectedItemIdentifiers = []
+    destination.configureNavigationAndTabBars()
+    updateNavigationBarItem(notificaition: Notification(name: .selectedIdentifiersUpdated))
     
     self.tabBarController?.selectedIndex = 1
   }
   
   private var dataSource: UICollectionViewDiffableDataSource<ItemCategory, NSManagedObjectID>!
-  private var barButton: UIBarButtonItem?
+  
+    
+  @IBOutlet var saveSelectedItemsBarButton: UIButton!
+  @IBOutlet var leftBarButtonItem: UIBarButtonItem!
+  
   private var sections: [ItemCategory] = []
   private var selectedItemIdentifiers: [NSManagedObjectID] = []
   var context: NSManagedObjectContext!
@@ -74,8 +90,6 @@ class MainViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    barButton = navigationItem.leftBarButtonItem
-
     setupView()
   }
   
@@ -85,19 +99,95 @@ class MainViewController: UIViewController {
     initFetchResultController()
   }
   
+  override func setEditing(_ editing: Bool, animated: Bool) {
+    super.setEditing(editing, animated: animated)
+    
+    navigationItem.setRightBarButtonItems([deleteButton, addNewItemButton], animated: true)
+    
+    collectionView.allowsMultipleSelection = true
+    collectionView.indexPathsForVisibleItems.forEach {
+      guard let itemCell = collectionView.cellForItem(at: $0) as? ItemCell else { return }
+      itemCell.isEditing = editing
+    }
+    
+    if !isEditing {
+      navigationItem.setRightBarButtonItems(nil, animated: true)
+      
+      collectionView.allowsMultipleSelection = false
+      collectionView.indexPathsForSelectedItems?.compactMap({ $0 }).forEach {
+        collectionView.deselectItem(at: $0, animated: true)
+      }
+    }
+  }
+  
+  func updateSeedData() {
+    let fileManager = FileManager.default
+    let libraryDirectory = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first
+    let sourceFolder = libraryDirectory!.appendingPathComponent("Application Support").path
+    
+    let destination = Bundle.main.resourceURL!.appendingPathComponent("RequiLiSeedData").path
+    
+    copyFiles(from: sourceFolder, to: destination)
+    }
+  
+  func copyFiles(from source: String, to destination: String) {
+    let fileManager = FileManager.default
+    
+    do {
+      let fileList = try fileManager.contentsOfDirectory(atPath: source)
+      let fileDestinationList = try fileManager.contentsOfDirectory(atPath: destination)
+      
+      for fileName in fileDestinationList {
+        try fileManager.removeItem(atPath: "\(destination)/\(fileName)")
+      }
+      for fileName in fileList {
+        try fileManager.copyItem(atPath: "\(source)/\(fileName)", toPath: "\(destination)/\(fileName)")
+      }
+    } catch  {
+      print(error)
+    }
+  }
+  
   func setupView() {
-    NotificationCenter.default.addObserver(self, selector: #selector(updateNavigationBarItem), name: .selectedIdentifiersUpdated, object: nil)
 
+    leftBarButtonItem = navigationItem.leftBarButtonItem
+    navigationItem.setRightBarButtonItems(nil, animated: false)
+    navigationItem.leftBarButtonItem = editButtonItem
+    
+    NotificationCenter.default.addObserver(self, selector: #selector(updateNavigationBarItem), name: .selectedIdentifiersUpdated, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(updateTitleSupplementaryView), name: .titleSupplementeryViewBackgroundUpdated, object: nil)
+    
+    collectionView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 20, right: 10)
+    
+    print(NSHomeDirectory())
     
     configureNavigationAndTabBars()
     updateNavigationBarItem(notificaition: .init(name: .selectedIdentifiersUpdated))
     collectionView.collectionViewLayout = configureLayout()
     collectionView.delegate = self
     configureDataSource()
-
-
   }
   
+  @IBAction func deleteItem(_ sender: Any) {
+    guard let selectedIndices = collectionView.indexPathsForSelectedItems else { return }
+    let dataSourceIndices = selectedIndices.compactMap({ path in
+      collectionView.dataSourceIndexPath(forPresentationIndexPath: path)
+    })
+    let dataSourceIdentifiers = dataSourceIndices.compactMap { path in
+      dataSource.itemIdentifier(for: path)
+    }
+    
+      dataSourceIdentifiers.forEach { id in
+        context.delete(context.object(with: id))
+      }
+      do {
+        try context?.save()
+        dismiss(animated: true)
+      } catch {
+        fatalError("core data save error")
+      }
+      updateSeedData()
+    }
 }
 // MARK: -Collection View
   extension MainViewController {
@@ -121,7 +211,7 @@ class MainViewController: UIViewController {
           let item = NSCollectionLayoutItem(layoutSize: itemSize)
           item.contentInsets = NSDirectionalEdgeInsets(top: 25, leading: 5, bottom: 20, trailing: 5)
           
-          let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.25), heightDimension: .fractionalHeight(0.2))
+          let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.32), heightDimension: .fractionalHeight(0.23))
           let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
           group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)
           
@@ -135,9 +225,10 @@ class MainViewController: UIViewController {
           
           let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(44))
           let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .topLeading)
-          sectionHeader.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+          sectionHeader.contentInsets = NSDirectionalEdgeInsets(top: 30, leading: 10, bottom: 0, trailing: 10)
           
           section.boundarySupplementaryItems = [sectionHeader]
+          
         
           
           return section
@@ -151,35 +242,6 @@ class MainViewController: UIViewController {
       }
     
     class CustomCompositionalLayout: UICollectionViewCompositionalLayout {
-      override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-        var attributes = super.layoutAttributesForElements(in: rect)
-        
-        for section in 0..<collectionView!.numberOfSections {
-          let backgroundAttributes = layoutAttributesForSupplementaryView(ofKind: "background", at: IndexPath(item: 0, section: section)) ?? UICollectionViewLayoutAttributes()
-          attributes?.append(backgroundAttributes)
-        }
-        return attributes
-      }
-      override func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
-        let attrs = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: elementKind, with: indexPath)
-
-        if elementKind == "background" {
-          attrs.size = collectionViewContentSize
-          
-          guard let items = collectionView?.numberOfItems(inSection: indexPath.section),
-          let cellAttrbts = collectionView!.layoutAttributesForItem(at: indexPath)
-          else { return UICollectionViewLayoutAttributes() }
-          let totalSectionHeight: CGFloat = CGFloat(items * 600)
-          attrs.frame = CGRect(x: 0, y: cellAttrbts.frame.origin.y, width: collectionView!.frame.size.width, height: totalSectionHeight)
-          
-          attrs.zIndex = -10
-          
-          return attrs
-        }
-        else {
-          return super.layoutAttributesForSupplementaryView(ofKind: elementKind, at: indexPath)
-        }
-      }
     }
     }
 
@@ -231,10 +293,30 @@ extension MainViewController {
           
         let itemCategory = self.dataSource.sectionIdentifier(for: indexPath.section)?.info
           titleSupplementaryView.textLabel?.text = itemCategory
-          titleSupplementaryView.backgroundImage?.image = UIImage(named: itemCategory!)
+//          titleSupplementaryView.backgroundImage?.image = UIImage(named: itemCategory!)
           titleSupplementaryView.textLabel?.textColor = UIColor(named: "TextColor")
           titleSupplementaryView.textLabel?.backgroundColor = UIColor(named: "default")
-          titleSupplementaryView.backgroundColor = UIColor(named: "LabelBackgroundColor")
+          titleSupplementaryView.backgroundColor = UIColor() {_ in
+          var sectionSelected: Bool = false
+            if let section = self.dataSource.sectionIdentifier(for: indexPath.section) {
+              let objects: [ItemModel] = self.selectedItemIdentifiers.compactMap { id in
+                (context.object(with: id) as? ItemModel)
+              }
+              let sectionsOfObjects = objects.map { model in
+                model.itemCategory
+              }
+              if sectionsOfObjects.contains(section) {
+                sectionSelected = true
+              } else {
+                sectionSelected = false
+              }
+            }
+            if sectionSelected {
+              return UIColor(named: "BackgroundColor")!
+            } else {
+              return UIColor(named: "TitleSubviewBackgroundColor")!
+            }
+        }
           titleSupplementaryView.layer.cornerRadius = 20
         return titleSupplementaryView
         
@@ -243,11 +325,7 @@ extension MainViewController {
         return nil
       }
     }
-    
-    
-    
-      collectionView.dataSource = self.dataSource
-    
+    collectionView.dataSource = self.dataSource
     
   }
 }
@@ -287,6 +365,7 @@ extension MainViewController: NSFetchedResultsControllerDelegate {
 
       self.dataSource.apply(currentSnapshot as NSDiffableDataSourceSnapshot<ItemCategory, NSManagedObjectID>, animatingDifferences: shouldAnimate)
     }
+  
 }
 
 // MARK: -Prepare for segue
@@ -318,16 +397,25 @@ extension MainViewController {
 
 extension MainViewController: UICollectionViewDelegate {
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    updateSelectedIdentifiers(collectionView: collectionView, indexPath: indexPath)
+    if !isEditing {
+      updateSelectedIdentifiers(collectionView: collectionView, indexPath: indexPath)
+    }
     }
   
   @objc func updateSelectedIdentifiers(collectionView: UICollectionView, indexPath: IndexPath) {
     
     guard let indexPathForItemIdentifier = collectionView.dataSourceIndexPath(forPresentationIndexPath: indexPath) else { return }
     guard let selectedItemIdentifier = dataSource.itemIdentifier(for: indexPathForItemIdentifier) else { return }
+    guard let selectedObject = context.object(with: selectedItemIdentifier) as? ItemModel else { return }
     guard let cell = collectionView.cellForItem(at: indexPath) as? ItemCell else {
       return
     }
+    let sectionsForSelectedIDs = selectedItemIdentifiers.map { id in
+      context.object(with: id) as? ItemModel
+    }.map { model in
+      model?.itemCategory
+    }
+    
     if !selectedItemIdentifiers.contains(selectedItemIdentifier) {
       
       selectedItemIdentifiers.append(selectedItemIdentifier)
@@ -340,34 +428,65 @@ extension MainViewController: UICollectionViewDelegate {
       }
       cell.backgroundColor = .white
     }
+    
     NotificationCenter.default.post(name: .selectedIdentifiersUpdated, object: nil)
+    let newSectionsForSelectedIDs = selectedItemIdentifiers.map { id in
+      context.object(with: id) as? ItemModel
+    }.map { model in
+      model?.itemCategory
+    }
+    
+    if sectionsForSelectedIDs.count != newSectionsForSelectedIDs.count{
+      NotificationCenter.default.post(name: .titleSupplementeryViewBackgroundUpdated, object: nil)
+    }
 
   }
+  
+  func collectionView(_ collectionView: UICollectionView, shouldBeginMultipleSelectionInteractionAt indexPath: IndexPath) -> Bool {
+    true
+  }
+  
+  func collectionView(_ collectionView: UICollectionView, didBeginMultipleSelectionInteractionAt indexPath: IndexPath) {
+    collectionView.isEditing = true
+  }
+  
+  func collectionViewDidEndMultipleSelectionInteraction(_ collectionView: UICollectionView) {
+    collectionView.isEditing = false
+  }
+
+}
+
+//MARK: Extensions
+
+extension MainViewController {
+  
   
   @objc func updateNavigationBarItem(notificaition: Notification) {
     if selectedItemIdentifiers.count > 0 {
-      navigationItem.setLeftBarButton(barButton, animated:{
+      
+      var badge = BadgeLabelView(frame: CGRect(x: 15, y: 0, width: 15, height: 15))
+      badge.text = String(describing: selectedItemIdentifiers.count)
+      saveSelectedItemsBarButton.addSubview(badge)
+      navigationItem.setLeftBarButton(leftBarButtonItem, animated:{
         selectedItemIdentifiers.count > 1 ? false : true
       }() )
+      
       }
      else {
-       navigationItem.setLeftBarButton(nil, animated: true)
+       navigationItem.setLeftBarButton(editButtonItem, animated: true)
     }
     
   }
+  @objc func updateTitleSupplementaryView()  {
+    collectionView.reloadData()
+  }
   
-  
-  
-  
-  
-}
-
-extension MainViewController {
   func configureNavigationAndTabBars() {
     let navigationBarAppearence = UINavigationBarAppearance()
     navigationBarAppearence.configureWithDefaultBackground()
     navigationBarAppearence.backgroundImage = UIImage(named: "RequiLi")
     navigationBarAppearence.backgroundColor = UIColor(named: "NavigationBarColor")
+    
     
     navigationBarAppearence.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
     
@@ -376,8 +495,8 @@ extension MainViewController {
     navigationItem.compactAppearance = navigationBarAppearence
     navigationItem.scrollEdgeAppearance = navigationBarAppearence
     
-    navigationItem.leftBarButtonItem?.tintColor = UIColor(named: "BackgroundColor")
-    navigationItem.rightBarButtonItem?.tintColor = UIColor(named: "BackgroundColor")
+    navigationItem.leftBarButtonItem?.tintColor = UIColor(named: "TextColor")
+    navigationItem.rightBarButtonItem?.tintColor = UIColor(named: "TextColor")
     
     var appearence = UITabBarAppearance()
     appearence.backgroundImage = UIImage(named: "BackgroundImage")

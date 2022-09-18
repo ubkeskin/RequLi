@@ -9,7 +9,7 @@ import UIKit
 import CoreData
 import PhotosUI
 
-class AddNewItemViewController: UITableViewController {
+class AddNewItemViewController: UITableViewController, BundleUpdate {
   @IBOutlet var nameTextField: UITextField!
   @IBOutlet var categoryPicker: UIPickerView!
   @IBOutlet var energyTextField: UITextField!
@@ -23,23 +23,36 @@ class AddNewItemViewController: UITableViewController {
     picker.delegate = self
     picker.allowsEditing = true
     
-//    let alert = UIAlertController(title: "Allow Access to Your Photos", message: "As you want to add custom photo, you need to allow access.", preferredStyle: .alert)
-//    let notNowAction = UIAlertAction(title: "Not Now", style: .cancel)
-//    alert.addAction(notNowAction)
-//
-//    let openSettingsAction = UIAlertAction(title: "Open Settings", style: .default) { [unowned self] (_) in
-//      gotoAppPrivacySettings()
-//    }
-//
-//    alert.addAction(openSettingsAction)
-//
-//
-//    present(alert, animated: true, completion: nil)
-
-    
     present(picker, animated: true)
   }
   
+  func updateSeedData() {
+    let fileManager = FileManager.default
+    let libraryDirectory = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first
+    let sourceFolder = libraryDirectory!.appendingPathComponent("Application Support").path
+    
+    let destination = Bundle.main.resourceURL!.appendingPathComponent("RequiLiSeedData").path
+    
+    copyFiles(from: sourceFolder, to: destination)
+    }
+  
+  func copyFiles(from source: String, to destination: String) {
+    let fileManager = FileManager.default
+    
+    do {
+      let fileList = try fileManager.contentsOfDirectory(atPath: source)
+      let fileDestinationList = try fileManager.contentsOfDirectory(atPath: destination)
+      
+      for fileName in fileDestinationList {
+        try fileManager.removeItem(atPath: "\(destination)/\(fileName)")
+      }
+      for fileName in fileList {
+        try fileManager.copyItem(atPath: "\(source)/\(fileName)", toPath: "\(destination)/\(fileName)")
+      }
+    } catch  {
+      print(error)
+    }
+  }
   
   var itemCategories = ItemCategory.allCases
   var context: NSManagedObjectContext?
@@ -69,6 +82,8 @@ class AddNewItemViewController: UITableViewController {
     } catch {
       fatalError("core data save error")
     }
+    
+    updateSeedData()
     navigationController?.popViewController(animated: true)
   }
   @IBAction func cancel(_ sender: Any) {

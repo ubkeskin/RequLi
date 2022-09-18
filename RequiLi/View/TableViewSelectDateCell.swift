@@ -12,4 +12,6 @@ class TableViewSelectDateCell: UITableViewCell {
   
   @IBOutlet var label: UILabel?
   @IBOutlet var purchaseDatePicker: UIDatePicker? = UIDatePicker()
+  
+  
 }
